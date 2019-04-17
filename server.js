@@ -1,3 +1,4 @@
+//Import statements
 let express = require("express");
 let fs = require("fs");
 let cookieParser = require("cookie-parser");
@@ -6,15 +7,19 @@ let multer = require("multer");
 let app = express();
 let upload = multer();
 
+//Middleware
 app.use(cookieParser());
+app.use("/static", express.static(__dirname + "/public"));
 
+//Chat variables
 let passwordsAssoc = {};
 let sessions = {};
 let messages = [];
-app.use("/static", express.static(__dirname + "/public"));
+
 app.get("/", (req, res) => {
   res.send(fs.readFileSync(__dirname + "/public/index.html").toString());
 });
+
 app.post("/messages", upload.none(), (req, res) => {
   console.log("POST messages body", req.body);
   let newMessage = {
@@ -23,25 +28,20 @@ app.post("/messages", upload.none(), (req, res) => {
   };
   messages.push(newMessage);
 });
+
 app.get("/messages", (req, res) => {
-  // console.log("Sending back the messages");
+  console.log("Sending back the messages");
   res.send(JSON.stringify(messages));
 });
 
 app.post("/signup", upload.none(), (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
-  if (passwordsAssoc[username] === undefined) {
-    passwordsAssoc[username] = password;
-    res.send("<html><body> signup successful </body></html>");
-    return;
-  }
-  res.send(`<html><body> Username ${username} already taken!
-  Try something original
-  </body></html>`);
+  passwordsAssoc[username] = password;
+  res.send("<html><body> signup successful </body></html>");
 });
 
-let changeMessageName = (oldName, newName) => {
+let changeNameMessages = (oldName, newName) => {
   for (message of messages) {
     if (message.user === oldName) {
       message.user = newName;
@@ -53,11 +53,10 @@ app.post("/setName", upload.none(), (req, res) => {
   let newName = req.body.newName;
   let oldName = sessions[req.cookies["sid"]];
   if (passwordsAssoc[newName] === undefined) {
-    //This happens
     passwordsAssoc[newName] = passwordsAssoc[oldName];
     sessions[req.cookies["sid"]] = newName;
-    changeMessageName(oldName, newName);
     delete passwordsAssoc[oldName];
+    changeNameMessages(oldName, newName);
     res.send("Success");
   }
   res.send("Error");
@@ -76,4 +75,5 @@ app.post("/login", upload.none(), (req, res) => {
   res.cookie("sid", sid);
   res.send(fs.readFileSync(__dirname + "/public/chat.html").toString());
 });
+
 app.listen(4000);

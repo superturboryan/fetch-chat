@@ -1,28 +1,27 @@
 let fetchAndUpdate = () => {
-  // 8
   fetch("/messages")
     .then(response => response.text())
     .then(responseBody => {
-      // 11
       let parsed = JSON.parse(responseBody);
       let msgListUL = document.getElementById("msg-list");
-      msgListUL.innerHTML = ""; // 14
+      msgListUL.innerHTML = "";
       parsed.forEach(elem => {
         // 15
-        let li = document.createElement("li"); // 16
-        li.innerText = elem.user + ": " + elem.msg; // 16
-        msgListUL.append(li); // 17
+        let li = document.createElement("li");
+        li.innerText = elem.user + ": " + elem.msg;
+        msgListUL.append(li);
       }); // 15
     }); // 11
-}; // 8
+};
 
-setInterval(fetchAndUpdate, 300); // 8
+setInterval(fetchAndUpdate, 500);
 
-let msgForm = document.getElementById("chat-form"); // 1
-msgForm.addEventListener("submit", event => {
+let chatForm = document.getElementById("chat-form");
+chatForm.addEventListener("submit", event => {
+  // 2
   event.preventDefault(); // 3
   let msgInput = document.getElementById("msg-input").value; // 4
-  let formData = new FormData();
+  let formData = new FormData(); // 5
   formData.append("message", msgInput); // 6
   fetch("/messages", {
     method: "POST",
@@ -45,9 +44,9 @@ nameForm.addEventListener("submit", event => {
     })
     .then(resB => {
       if (resB === "Success") {
-        alert("Name changed successfully");
+        alert(`Username changed successfully to ${newName}`);
       } else if (resB === "Error") {
-        alert("Name already taken");
+        alert(`${newName} is already taken!`);
       }
     });
 });
