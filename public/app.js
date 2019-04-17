@@ -6,26 +6,25 @@ let fetchAndUpdate = () => {
       let msgListUL = document.getElementById("msg-list");
       msgListUL.innerHTML = "";
       parsed.forEach(elem => {
-        // 15
         let li = document.createElement("li");
+        li.style.color = elem.color;
         li.innerText = elem.user + ": " + elem.msg;
         msgListUL.append(li);
-      }); // 15
-    }); // 11
+      });
+    });
 };
 
 setInterval(fetchAndUpdate, 500);
 
 let chatForm = document.getElementById("chat-form");
 chatForm.addEventListener("submit", event => {
-  // 2
-  event.preventDefault(); // 3
-  let msgInput = document.getElementById("msg-input").value; // 4
-  let formData = new FormData(); // 5
-  formData.append("message", msgInput); // 6
+  event.preventDefault();
+  let msgInput = document.getElementById("msg-input").value;
+  let msgData = new FormData();
+  msgData.append("message", msgInput);
   fetch("/messages", {
     method: "POST",
-    body: formData
+    body: msgData
   });
 });
 
@@ -50,3 +49,16 @@ nameForm.addEventListener("submit", event => {
       }
     });
 });
+
+let currentUserLabel = document.getElementById("current-user");
+let updateCurrentUser = () => {
+  fetch("/currentUser")
+    .then(resH => {
+      return resH.text();
+    })
+    .then(resB => {
+      currentUserLabel.innerText = `Current user: ${resB}`;
+    });
+};
+
+setInterval(updateCurrentUser, 500);
