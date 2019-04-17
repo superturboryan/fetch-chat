@@ -90,6 +90,11 @@ app.post("/setName", upload.none(), (req, res) => {
 app.post("/login", upload.none(), (req, res) => {
   let username = req.body.username;
   let passwordGiven = req.body.password;
+  if (onlineUsers.includes(username)) {
+    res.send(
+      `<html><body> User ${username} is already signed in! Make sure to sign out! </body></html>`
+    );
+  }
   let expectedPassword = passwordsAssoc[username];
   if (expectedPassword !== passwordGiven) {
     res.send("<html><body> invalid username or password </body></html>");
@@ -98,7 +103,9 @@ app.post("/login", upload.none(), (req, res) => {
   let sid = Math.floor(Math.random() * 10000000);
   sessions[sid] = username;
   //Add user to currentUsers array
-  onlineUsers.push(sessions[sid]);
+  if (!onlineUsers.includes(username)) {
+    onlineUsers.push(username);
+  }
   console.log(onlineUsers);
   res.cookie("sid", sid);
   res.send(fs.readFileSync(__dirname + "/public/chat.html").toString());
@@ -131,10 +138,9 @@ app.post("/orange", (req, res) => {
 
 app.get("/signout", (req, res) => {
   let sessionId = req.cookies.sid;
-  delete sessions[sessionId];
   let index = onlineUsers.indexOf(sessions[sessionId]);
+  delete sessions[sessionId];
   onlineUsers.splice(index, 1);
-  // res.send(fs.readFileSync(__dirname + "/public/index.html").toString());
   res.send("Signing out");
 });
 
