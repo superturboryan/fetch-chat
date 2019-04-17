@@ -16,7 +16,7 @@ let passwordsAssoc = {};
 let colorAssoc = {};
 let sessions = {};
 let messages = [];
-let currentUsers = [];
+let onlineUsers = [];
 
 app.get("/", (req, res) => {
   res.send(fs.readFileSync(__dirname + "/public/index.html").toString());
@@ -30,6 +30,10 @@ app.post("/messages", upload.none(), (req, res) => {
     color: colorAssoc[sessions[req.cookies["sid"]]]
   };
   messages.push(newMessage);
+});
+
+app.get("/onlineUsers", (req, res) => {
+  res.send(JSON.stringify(onlineUsers));
 });
 
 //Send current user as response
@@ -93,8 +97,9 @@ app.post("/login", upload.none(), (req, res) => {
   }
   let sid = Math.floor(Math.random() * 10000000);
   sessions[sid] = username;
-  currentUsers.push(sessions[sid]);
-  console.log(currentUsers);
+  //Add user to currentUsers array
+  onlineUsers.push(sessions[sid]);
+  console.log(onlineUsers);
   res.cookie("sid", sid);
   res.send(fs.readFileSync(__dirname + "/public/chat.html").toString());
 });
@@ -122,6 +127,15 @@ app.post("/orange", (req, res) => {
   colorAssoc[user] = "orange";
   changeColorMessages("orange", user);
   res.send(fs.readFileSync(__dirname + "/public/chat.html").toString());
+});
+
+app.get("/signout", (req, res) => {
+  let sessionId = req.cookies.sid;
+  delete sessions[sessionId];
+  let index = onlineUsers.indexOf(sessions[sessionId]);
+  onlineUsers.splice(index, 1);
+  // res.send(fs.readFileSync(__dirname + "/public/index.html").toString());
+  res.send("Signing out");
 });
 
 app.listen(4000);

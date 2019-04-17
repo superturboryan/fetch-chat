@@ -62,3 +62,38 @@ let updateCurrentUser = () => {
 };
 
 setInterval(updateCurrentUser, 500);
+
+let onlineUsers = document.getElementById("onlineUsers");
+
+let updateOnlineUsers = () => {
+  fetch("/onlineUsers")
+    .then(resH => {
+      return resH.text();
+    })
+    .then(resB => {
+      let users = JSON.parse(resB);
+
+      onlineUsers.innerHTML = "";
+
+      for (user of users) {
+        let li = document.createElement("li");
+        li.innerText = user;
+        onlineUsers.appendChild(li);
+      }
+    });
+};
+
+setInterval(updateOnlineUsers, 500);
+
+let signoutButton = document.getElementById("signout");
+signoutButton.addEventListener("click", event => {
+  event.preventDefault();
+
+  fetch("/signout")
+    .then(resH => {
+      return resH.text();
+    })
+    .then(resB => {
+      location.href = "/";
+    });
+});
