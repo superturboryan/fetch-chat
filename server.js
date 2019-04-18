@@ -90,11 +90,7 @@ app.post("/setName", upload.none(), (req, res) => {
 app.post("/login", upload.none(), (req, res) => {
   let username = req.body.username;
   let passwordGiven = req.body.password;
-  if (onlineUsers.includes(username)) {
-    res.send(
-      `<html><body> User ${username} is already signed in! Make sure to sign out! </body></html>`
-    );
-  }
+
   let expectedPassword = passwordsAssoc[username];
   if (expectedPassword !== passwordGiven) {
     res.send("<html><body> invalid username or password </body></html>");

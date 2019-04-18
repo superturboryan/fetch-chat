@@ -29,7 +29,7 @@ chatForm.addEventListener("submit", event => {
 });
 
 let nameForm = document.getElementById("name-form");
-nameForm.addEventListener("submit", event => {
+nameForm.addEventListener("", event => {
   event.preventDefault();
   let newName = document.getElementById("name-input").value;
   let nameData = new FormData();
