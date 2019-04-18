@@ -1,0 +1,9 @@
+.flex {
+  display: flex;
+}
+
+.messages {
+  border: 2px solid black;
+  width: 75%;
+  margin: 0 auto;
+}

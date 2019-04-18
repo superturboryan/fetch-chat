@@ -1,12 +1,17 @@
 <html>
 
+    <link rel="stylesheet" href="/static/chat.css">
+
 <body>
 
-    <div id="current-user"></div>
+    <div class="flex">
+        <div id="current-user"></div>
+        <button id="signout">Sign out</button>
+    </div>
 
-    <button id="signout">Sign out</button>
-
-    <ul id="msg-list"></ul>
+    <div class="messages">
+        <ul id="msg-list"></ul>
+    </div>
 
     <form id="chat-form">
         <input type="text" id="msg-input"></input>
@@ -20,7 +25,7 @@
     </form>
 
     Select your message color:
-    
+
     <form action="/red" method="POST">
         <input type="submit" value="red!"/>
     </form>

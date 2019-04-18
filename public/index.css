@@ -24,7 +24,7 @@ h1 {
 }
 
 .container {
-  background-color: #dce8ee;
+  background-color: rgba(220, 232, 238, 0.6);
   width: 400px;
   margin: 0 auto;
   padding: 20px;
